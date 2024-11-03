@@ -8,10 +8,10 @@ namespace Cfa.Clientes.Persistence.Configuration
     {
         public TelefonoConfiguration(EntityTypeBuilder<TelefonoEntity> entityBuilder)
         {
-            entityBuilder.HasKey(x => x.Id);
+            entityBuilder.HasKey(x => x.TelefonoID);
 
      
-            entityBuilder.Property(x => x.Numero)
+            entityBuilder.Property(x => x.Telefono)
                 .IsRequired() 
                 .HasMaxLength(15) 
                 .IsUnicode(false); 
@@ -19,7 +19,7 @@ namespace Cfa.Clientes.Persistence.Configuration
             // Configuración de la relación con ClienteEntity
             entityBuilder.HasOne(x => x.Cliente)
                 .WithMany(c => c.Telefonos) 
-                .HasForeignKey(x => x.ClienteId) 
+                .HasForeignKey(x => x.CodigoCliente) 
                 .OnDelete(DeleteBehavior.Cascade); 
         }
     }

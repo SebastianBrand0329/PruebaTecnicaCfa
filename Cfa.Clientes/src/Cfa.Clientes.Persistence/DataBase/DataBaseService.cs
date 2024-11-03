@@ -1,4 +1,4 @@
-﻿using Cfa.Clientes.Application;
+﻿using Cfa.Clientes.Application.DataBase;
 using Cfa.Clientes.Domain.Entities.Address;
 using Cfa.Clientes.Domain.Entities.Client;
 using Cfa.Clientes.Domain.Entities.Phone;
@@ -14,9 +14,14 @@ public class DataBaseService : DbContext, IDataBaseService
         
     }
 
-    public DbSet<ClienteEntity> Clientes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public DbSet<DireccionEntity> Direcciones { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public DbSet<TelefonoEntity> Telefonos { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public DbSet<ClienteEntity> Clientes { get; set; }
+    public DbSet<DireccionEntity> Direcciones { get; set; }
+    public DbSet<TelefonoEntity> Telefonos { get; set; }
+
+    public async Task<bool> SaveAsync()
+    {
+        return await SaveChangesAsync() > 0;
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

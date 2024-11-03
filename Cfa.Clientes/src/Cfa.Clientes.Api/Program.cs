@@ -1,4 +1,12 @@
+using Cfa.Clientes.Api;
+using Cfa.Clientes.Application;
+using Cfa.Clientes.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddWebApi()
+                .AddApplication()
+                .AddPersistence(builder.Configuration);
 
 // Add services to the container.
 

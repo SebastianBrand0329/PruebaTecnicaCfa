@@ -9,7 +9,7 @@ public class ClienteConfiguration
     public ClienteConfiguration(EntityTypeBuilder<ClienteEntity> entityBuilder)
     {
    
-        entityBuilder.HasKey(x => x.Id);
+        entityBuilder.HasKey(x => x.Codigo);
 
 
         entityBuilder.Property(x => x.TipoDocumento)
@@ -40,13 +40,13 @@ public class ClienteConfiguration
         // Configuración de la relación con Direcciones
         entityBuilder.HasMany(x => x.Direcciones)
             .WithOne(d => d.Cliente) 
-            .HasForeignKey(d => d.ClienteId) 
+            .HasForeignKey(d => d.CodigoCliente) 
             .OnDelete(DeleteBehavior.Cascade); 
 
         // Configuración de la relación con Teléfonos
         entityBuilder.HasMany(x => x.Telefonos)
             .WithOne(t => t.Cliente) 
-            .HasForeignKey(t => t.ClienteId) 
+            .HasForeignKey(t => t.CodigoCliente) 
             .OnDelete(DeleteBehavior.Cascade); 
 
     }
