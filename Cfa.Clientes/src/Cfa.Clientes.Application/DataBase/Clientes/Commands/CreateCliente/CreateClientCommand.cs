@@ -18,10 +18,9 @@ public class CreateClientCommand : ICreateClientCommand
 
     public async Task<CreateClientModel> Execute(CreateClientModel model)
     {
-        var client = await _service.Clientes.FirstOrDefaultAsync(x => x.NumeroDocumento == model.NumeroDocumento &&
-                                                                 x.TipoDocumento == model.TipoDocumento);
+        var client = await ValidateClient(model);
 
-        if (client is null)
+        if (!client)
         {
             var entity = _mapper.Map<ClienteEntity>(model);
             await _service.Clientes.AddAsync(entity);
@@ -34,4 +33,16 @@ public class CreateClientCommand : ICreateClientCommand
         throw new Exception("El tipo y número de documento ya están registrados.");
 
     }
+
+    private async Task<bool> ValidateClient(CreateClientModel model)
+    {
+        var client = await _service.Clientes.FirstOrDefaultAsync(x => x.NumeroDocumento == model.NumeroDocumento &&
+                                                                 x.TipoDocumento == model.TipoDocumento);
+        if (client is null)
+            return false;
+        return true;
+
+        
+    }
+
 }

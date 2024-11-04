@@ -17,8 +17,10 @@ public class ClienteValidator : AbstractValidator<CreateClientModel>
         .Must(numero => numero >= 1 && numero <= 99999999999).WithMessage("El número de documento debe tener hasta 11 dígitos.");
 
         RuleFor(c => c.Email)
-            .EmailAddress().When(c => !string.IsNullOrEmpty(c.Email))
+            .NotEmpty().WithMessage("El correo electrónico es obligatorio.")
+            .Matches(@"^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,6}$")
             .WithMessage("El formato del correo electrónico no es válido.");
+
 
         RuleFor(c => c.Nombres)
             .NotEmpty().WithMessage("El nombre es obligatorio.")
@@ -33,8 +35,8 @@ public class ClienteValidator : AbstractValidator<CreateClientModel>
 
         RuleFor(c => c.Genero)
             .NotEmpty().WithMessage("El género es obligatorio.")
-            .Must(g => g == "F" || g == "M")
-            .WithMessage("El género debe ser 'F' o 'M'.");
+            .Matches("^(F|M)$").WithMessage("El género debe ser 'F' o 'M'.");
+
 
         RuleFor(c => c.FechaNacimiento)
             .NotEmpty().WithMessage("La fecha de nacimiento es obligatoria.")

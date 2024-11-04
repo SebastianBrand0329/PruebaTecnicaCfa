@@ -2,6 +2,10 @@
 using Cfa.Clientes.Application.DataBase.Clientes.Commands.DeleteClient;
 using Cfa.Clientes.Application.DataBase.Clientes.Commands.UpdateCliente;
 using Cfa.Clientes.Application.DataBase.Clientes.Queries.GetAllClientFilter;
+using Cfa.Clientes.Application.DataBase.Clientes.Queries.GetByClientAddress;
+using Cfa.Clientes.Application.DataBase.Clientes.Queries.GetByClientPhone;
+using Cfa.Clientes.Application.DataBase.Clientes.Queries.GetClientByDate;
+using Cfa.Clientes.Application.DataBase.Clientes.Queries.GetClientByDocument;
 using Cfa.Clientes.Application.Exceptions;
 using Cfa.Clientes.Application.Features;
 using FluentValidation;
@@ -31,10 +35,9 @@ public class ClientesController : ControllerBase
     [HttpPut("update")]
     public async Task<IActionResult> Update([FromBody] UpdateClientModel model, [FromServices] IUpdateClientCommand updateClient, [FromServices] IValidator<UpdateClientModel> validator)
     {
-
         var validate = await validator.ValidateAsync(model);
 
-        if(!validate.IsValid)
+        if (!validate.IsValid)
             return StatusCode(StatusCodes.Status400BadRequest, ResponseApiService.Response(StatusCodes.Status400BadRequest, validate.Errors));
 
         var data = await updateClient.Execute(model);
@@ -45,7 +48,6 @@ public class ClientesController : ControllerBase
     [HttpDelete("delete")]
     public async Task<IActionResult> Delete([FromBody] DeleteClientModel model, [FromServices] IDeleteClientModel deleteClient, [FromServices] IValidator<DeleteClientModel> validator)
     {
-
         var validate = await validator.ValidateAsync(model);
 
         if (!validate.IsValid)
@@ -57,9 +59,8 @@ public class ClientesController : ControllerBase
     }
 
     [HttpGet("getbyfilter")]
-    public async Task<IActionResult> Delete([FromBody] string search, [FromServices] IGetAllClientFilterQuery filterQuery)
+    public async Task<IActionResult> GetByFilter([FromBody] string search, [FromServices] IGetAllClientFilterQuery filterQuery)
     {
-
         var data = await filterQuery.Execute(search);
 
         if (data == null || data.Count == 0)
@@ -67,4 +68,55 @@ public class ClientesController : ControllerBase
 
         return StatusCode(StatusCodes.Status200OK, ResponseApiService.Response(StatusCodes.Status200OK, data));
     }
+
+    [HttpGet("getbyDocument")]
+    public async Task<IActionResult> GetByDocument([FromServices] IGetClientByDocumentCommand getClient)
+    {
+        var data = await getClient.Execute();
+
+        if (data == null || data.Count == 0)
+            return StatusCode(StatusCodes.Status404NotFound, ResponseApiService.Response(StatusCodes.Status404NotFound));
+
+        return StatusCode(StatusCodes.Status200OK, ResponseApiService.Response(StatusCodes.Status200OK, data));
+    }
+
+    [HttpGet("getbyDate")]
+    public async Task<IActionResult> GetbyDate([FromBody] GetClientByDateModelInput getClientByDate, [FromServices] IGetClientByDateCommand getClient, [FromServices] IValidator<GetClientByDateModelInput> validator)
+    {
+        var validate = await validator.ValidateAsync(getClientByDate);
+
+        if (!validate.IsValid)
+            return StatusCode(StatusCodes.Status400BadRequest, ResponseApiService.Response(StatusCodes.Status400BadRequest, validate.Errors));
+
+        var data = await getClient.Execute(getClientByDate);
+
+        if (data == null || data.Count == 0)
+            return StatusCode(StatusCodes.Status404NotFound, ResponseApiService.Response(StatusCodes.Status404NotFound));
+
+        return StatusCode(StatusCodes.Status200OK, ResponseApiService.Response(StatusCodes.Status200OK, data));
+    }
+
+    [HttpGet("getbyClientPhone")]
+    public async Task<IActionResult> getbyClientPhone([FromServices] IGetByClientPhoneCommand getByClient)
+    {
+        var data = await getByClient.Execute();
+
+        if (data == null || data.Count == 0)
+            return StatusCode(StatusCodes.Status404NotFound, ResponseApiService.Response(StatusCodes.Status404NotFound));
+
+        return StatusCode(StatusCodes.Status200OK, ResponseApiService.Response(StatusCodes.Status200OK, data));
+    }
+
+
+    [HttpGet("getbyClientAddress")]
+    public async Task<IActionResult> getbyClientAddress([FromServices] IGetByClientAddressCommand getByClient)
+    {
+        var data = await getByClient.Execute();
+
+        if (data == null || data.Count == 0)
+            return StatusCode(StatusCodes.Status404NotFound, ResponseApiService.Response(StatusCodes.Status404NotFound));
+
+        return StatusCode(StatusCodes.Status200OK, ResponseApiService.Response(StatusCodes.Status200OK, data));
+    }
+
 }
