@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Cfa.Clientes.Application.Helpers.ConverToDate;
 using Cfa.Clientes.Domain.Entities.Client;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cfa.Clientes.Application.DataBase.Clientes.Commands.CrearCliente;
@@ -22,6 +22,7 @@ public class CreateClientCommand : ICreateClientCommand
 
         if (!client)
         {
+            model.FechaNacimiento = ConvertToDate.ConvertToDates(model.FechaNacimiento);
             var entity = _mapper.Map<ClienteEntity>(model);
             await _service.Clientes.AddAsync(entity);
             await _service.Direcciones.AddRangeAsync(entity.Direcciones);
@@ -31,7 +32,6 @@ public class CreateClientCommand : ICreateClientCommand
         }
 
         throw new Exception("El tipo y número de documento ya están registrados.");
-
     }
 
     private async Task<bool> ValidateClient(CreateClientModel model)
@@ -41,8 +41,5 @@ public class CreateClientCommand : ICreateClientCommand
         if (client is null)
             return false;
         return true;
-
-        
     }
-
 }
